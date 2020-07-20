@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Net;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -14,6 +16,7 @@ public class Joystick : MonoBehaviour, IDragHandler,IPointerUpHandler, IPointerD
     private Vector2 startPoint;
     private Vector2 endPoint;
     private Vector3 inputVector;
+    private float rotation;
 
     private void Awake()
     {
@@ -25,8 +28,8 @@ public class Joystick : MonoBehaviour, IDragHandler,IPointerUpHandler, IPointerD
     {
         startPoint = new Vector3(eventData.position.x, eventData.position.y, cashedCamera.position.z);
         bgImage.rectTransform.position = startPoint;
-        bgImage.gameObject.SetActive(true);        
-        OnDrag(eventData);
+        bgImage.gameObject.SetActive(true);
+        //OnDrag(eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -42,6 +45,8 @@ public class Joystick : MonoBehaviour, IDragHandler,IPointerUpHandler, IPointerD
             joystickImage.rectTransform.anchoredPosition = new Vector3(
                 inputVector.x * (bgImage.rectTransform.sizeDelta.x / 3),
                 inputVector.z * (bgImage.rectTransform.sizeDelta.y / 3));
+        rotation = Mathf.Atan2(endPoint.y - 0, endPoint.x - 0) * 180 / Mathf.PI;
+        //rotation = Mathf.Acos((startPoint.x * endPoint.normalized.x + startPoint.y * endPoint.normalized.y) / (startPoint.magnitude * endPoint.normalized.magnitude));
     }
     public void OnPointerUp(PointerEventData eventData)
     {
@@ -61,7 +66,7 @@ public class Joystick : MonoBehaviour, IDragHandler,IPointerUpHandler, IPointerD
     {
         if (isTouch)
         {
-            playerUnit.Move(inputVector);
+            playerUnit.Move(inputVector,rotation);
         }
     }
 

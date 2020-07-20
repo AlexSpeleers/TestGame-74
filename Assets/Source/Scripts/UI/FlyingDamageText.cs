@@ -8,13 +8,15 @@ public class FlyingDamageText : MonoBehaviour
     private float timeToLerp = 1f;
     private float timeLerped = 0f;
 
-    // Doesn't work as expected - don't know why, but it always start not in position it is parented to but more like world pos.
+    private void Awake()
+    {
+        initialPos = this.transform.localPosition;
+    }
     public void ShowDamage(int damage)
     {
-        initialPos = this.transform.position;
-        endPos = new Vector3(initialPos.x + 0.3f, initialPos.y + 0.7f, initialPos.z);
         StopAllCoroutines();
-        this.transform.position = initialPos;
+        endPos = new Vector3(initialPos.x + 0.3f, initialPos.y + 0.7f, initialPos.z);
+        this.transform.localPosition = initialPos;
         text.text = $"{damage}";
         if (damage > 0)
         {
@@ -32,7 +34,7 @@ public class FlyingDamageText : MonoBehaviour
         while (timeLerped <= timeToLerp) 
         {
             timeLerped += Time.deltaTime;
-            this.transform.position = Vector3.Lerp(initialPos, endPos, timeLerped / timeToLerp);
+            this.transform.localPosition = Vector3.Lerp(initialPos, endPos, timeLerped / timeToLerp);
             yield return null;
         }
         timeLerped = 0;
